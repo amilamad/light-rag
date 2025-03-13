@@ -3,23 +3,35 @@ from llama_index.core.agent.workflow import AgentWorkflow
 from llama_index.llms.ollama import Ollama
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
+from llama_index.core.base.embeddings.base import BaseEmbedding, Embedding
+from extensions.nomic_embedding import NomicEmbedding
+
 from huggingface_hub import login
 
-# Token for huggingface_hub access.
-# Goto https://huggingface.co/settings/tokens and create one
-login(token="")
-embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-base-en-v1.5")
+from nomic import embed
+import numpy as np
+
+# nk-ALQs3L7funfp5oHby8uhuocAlmLHkezUteXLg7eBJ8A
+print("RAG starting")
+embed_model = NomicEmbedding();
+
+print("Loaded custom embedding model")
+
+documents = SimpleDirectoryReader("./docs").load_data()
+for doc in documents:
+    print(doc)
+
+index = VectorStoreIndex.from_documents(documents=documents, 
+                                        embed_model=embed_model)
 
 # Create the llm instance
 llm_model=Ollama(model="llama3.2", request_timeout=360.0)
-
-documents = SimpleDirectoryReader("./docs").load_data()
-index = VectorStoreIndex.from_documents(documents=documents, 
-                                        embed_model=embed_model)
+print("Loaded LLM model")
 
 query_engine = index.as_query_engine(llm=llm_model)
 
 async def search_documents(query: str) -> str:
+    print("Searching document index for query {}".format(query))
     response = await query_engine.aquery(query)
     return str(response)
 
@@ -31,7 +43,7 @@ agent = AgentWorkflow.from_tools_or_functions(
 
 async def main():
     # Run the agent
-    response = await agent.run("Who is Amila Rathnayake and what languages that he knows")
+    response = await agent.run("Who is Amila Rathnayake")
     print(str(response))
 
 # Run the agent
