@@ -1,1 +1,8 @@
-vault_test_env
+vault_ws_env
+chroma_db/chroma.sqlite3
+chroma_db/bc87d86f-710c-4dad-bef6-54d6a3b8ee4d/data_level0.bin
+chroma_db/bc87d86f-710c-4dad-bef6-54d6a3b8ee4d/header.bin
+chroma_db/bc87d86f-710c-4dad-bef6-54d6a3b8ee4d/length.bin
+chroma_db/bc87d86f-710c-4dad-bef6-54d6a3b8ee4d/link_lists.bin
+.pyc
+__pycache__
