@@ -27,10 +27,9 @@ chroma_client = chromadb.PersistentClient(path="./chroma_db")
 
 collection_name = "random_facts_collection"
 collections = chroma_client.list_collections()
-collection_names = [col.name for col in collections]
 
 index = None
-if  not collection_name in collection_names:
+if  not collection_name in collections:
     print("Collection {} was not found. Creating ... ".format(collection_name))
 
     documents = SimpleDirectoryReader("./docs").load_data()
@@ -43,7 +42,7 @@ if  not collection_name in collection_names:
     # Create collection
     chroma_collection = chroma_client.create_collection(collection_name)
 
-    # Wrap Chroma in a LlamaIndex-compatible vector store
+    # LlamaIndex wrapper for Chroma db
     vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
@@ -64,7 +63,7 @@ else:
 llm_model=Ollama(model="llama3.2", request_timeout=360.0)
 print("Loaded LLM model")
 
-query_engine = index.as_query_engine(similarity_top_k=1, llm=llm_model)
+query_engine = index.as_query_engine(similarity_top_k=4, llm=llm_model)
 
 async def search_documents(query: str) -> str:
     print("Searching document index for query {}".format(query))
@@ -72,8 +71,7 @@ async def search_documents(query: str) -> str:
     return str(response)
 
 async def main():
-    # Run the agent
-    response = await search_documents("Where done Amila lives?")
+    response = await search_documents("Who is this")
     print(str(response))
 
 # Run the agent
