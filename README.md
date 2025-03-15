@@ -3,8 +3,7 @@ Very minimal RAG(Retrival Augment Generation) library for integrating RAG to you
 Build with Llama Index.
 
 Setup:
-pip install -r requirements.txt
-
-Install Ollama
-ollama run llama3.2
-
+- pip install -r requirements.txt
+- Install Ollama
+- ollama run llama3.2
+- Run example : python main.py 
