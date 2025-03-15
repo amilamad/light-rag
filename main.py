@@ -21,7 +21,7 @@ from light_rag import LightRAG
 async def main():
     rag = LightRAG("user1_rag")
     rag.LoadDocuments("./docs")
-    response = await rag.Query("Who is Amila?")
+    response = await rag.Query("What are the two movies mentioned?")
 
     print("Answer   ============ \n{}".format(str(response)))
     print("Sources  ============ \n{}".format(response.get_formatted_sources()))
