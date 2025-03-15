@@ -9,7 +9,6 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
 from llama_index.core.llms.mock import MockLLM
 from llama_index.llms.ollama import Ollama
-
 from llama_index.core import VectorStoreIndex
 from llama_index.core import StorageContext
 from llama_index.vector_stores.chroma import ChromaVectorStore
@@ -59,20 +58,21 @@ else:
                                                embed_model=embed_model);
 
 # Create the llm instance
-#mock_llm_model=MockLLM()
+#llm_model=MockLLM()
 llm_model=Ollama(model="llama3.2", request_timeout=360.0)
 print("Loaded LLM model")
 
 query_engine = index.as_query_engine(similarity_top_k=4, llm=llm_model)
 
-async def search_documents(query: str) -> str:
+async def search_documents(query: str):
     print("Searching document index for query {}".format(query))
     response = await query_engine.aquery(query)
-    return str(response)
+    return response
 
 async def main():
-    response = await search_documents("Who is this")
-    print(str(response))
+    response = await search_documents("What is Amilas first project")
+    print("Answer   ============ \n{}".format(str(response)))
+    print("Sources  ============ \n{}".format(response.get_formatted_sources()))
 
 # Run the agent
 if __name__ == "__main__":
