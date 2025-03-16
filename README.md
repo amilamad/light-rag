@@ -1,5 +1,5 @@
 # LightRAG
-Very minimal RAG(Retrival Augment Generation) library for integrating RAG to your applcation and learning basic steps of RAG pipline.
+Very minimal RAG(Retrival Augment Generation) library for adding RAG capabilities to your applcation and learning basic steps of RAG pipline.
 Build with Llama Index.
 
 Setup:
