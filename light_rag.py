@@ -5,6 +5,7 @@ from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
 from llama_index.core.node_parser import SentenceSplitter
 
 from extensions.nomic_embedding import NomicEmbedding
+from llama_index.embeddings.ollama import OllamaEmbedding
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
 from llama_index.core.llms.mock import MockLLM
@@ -22,8 +23,8 @@ class LightRAG:
         self.llm_model=Ollama(model="llama3.2", request_timeout=360.0)
         print("Loaded LLM model")
 
-        self.embed_model = NomicEmbedding()
-        print("Loaded custom embedding model")
+        self.embed_model = OllamaEmbedding(model_name="mxbai-embed-large")
+        print("Loaded embedding model")
         
     def load_documents(self, path:str):
 
