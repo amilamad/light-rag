@@ -12,16 +12,20 @@ from llama_index.llms.ollama import Ollama
 from llama_index.core import VectorStoreIndex
 from llama_index.core import StorageContext
 from llama_index.vector_stores.chroma import ChromaVectorStore
+
 import chromadb
 
 class LightRAG:
     def __init__(self, id: str):
         self.id = id
-        pass
+                            
+        self.llm_model=Ollama(model="llama3.2", request_timeout=360.0)
+        print("Loaded LLM model")
 
-    def LoadDocuments(self, path:str):
-        embed_model = NomicEmbedding();
+        self.embed_model = NomicEmbedding()
         print("Loaded custom embedding model")
+        
+    def load_documents(self, path:str):
 
         # Initialize the Chroma client
         chroma_client = chromadb.PersistentClient(path="./chroma_db")
@@ -35,7 +39,7 @@ class LightRAG:
 
             documents = SimpleDirectoryReader(path).load_data()
             
-            # Choose better chunk size for breaking the text. 
+            # Choose better chlunk size for breaking the text. 
             # If too big context text match size will be too big.
             splitter = SentenceSplitter(chunk_size=200) 
             nodes = splitter.get_nodes_from_documents(documents)
@@ -48,7 +52,7 @@ class LightRAG:
             storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
             self.index = VectorStoreIndex(nodes=nodes,
-                                    embed_model=embed_model,
+                                    embed_model=self.embed_model,
                                     storage_context=storage_context)
         else:
             chroma_collection = chroma_client.get_collection(collection_name)
@@ -57,13 +61,10 @@ class LightRAG:
 
             vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
             self.index = VectorStoreIndex.from_vector_store(vector_store=vector_store,
-                                                    embed_model=embed_model)
+                                                    embed_model=self.embed_model)
 
-    async def Query(self, query:str):                    
-        llm_model=Ollama(model="llama3.2", request_timeout=360.0)
-        print("Loaded LLM model")
-
-        self.query_engine = self.index.as_query_engine(similarity_top_k=4, llm=llm_model)
+    async def query(self, query:str):
+        self.query_engine = self.index.as_query_engine(similarity_top_k=4, llm=self.llm_model)
         print("Searching document index for query {}".format(query))
         return await self.query_engine.aquery(query)
 
