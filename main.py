@@ -8,7 +8,7 @@ async def main():
     response = await rag.query("What are the two movies mentioned?")
 
     print("Answer:   \n{}".format(str(response)))
-    print("Sources:  \n{}".format(response.get_formatted_sources()))
+    print("Sources:  \n{}".format(response.get_formatted_sources(length=1000)))
 
 # Run the agent
 if __name__ == "__main__":
